@@ -20,6 +20,7 @@ export function Animated({ children }) {
             animate="animate"
             exit="exit"
             transition="transition"
+            className="relative"
         >
             { children }
         </motion.div>

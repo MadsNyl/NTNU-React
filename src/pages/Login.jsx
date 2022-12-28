@@ -1,11 +1,16 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated } from "./Animated";
-import { AuthContext } from "../context/AuthProvider";
 import axios from "../api/axios";
+import useAuth from "../hooks/UseAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export function Login() {
-    const [auth, setAuth] = useContext(AuthContext);
+    const [auth, setAuth, persist, setPersist] = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/dashboard";
 
     const userRef = useRef();
     const errorRef = useRef();
@@ -13,7 +18,6 @@ export function Login() {
     const [user, setUser] = useState();
     const [password, setPassword] = useState();
     const [error, setError] = useState();
-    const [success, setSuccess] = useState();
 
     // useEffect(() => {
     //     userRef.current.focus();
@@ -35,30 +39,27 @@ export function Login() {
                     withCredentials: true
                 }
             );
-            console.log(JSON.stringify(res?.data));
             const accessToken = res?.data?.accessToken;
             const role = res?.data?.role;
             setAuth({user, password, accessToken, role});
             setUser("");
             setPassword("");
-            setSuccess(true);
+            navigate(from, { replace: true });
         } catch (e) {
             console.log(e);
         }
     }
 
+    const togglePersist = () => {
+        setPersist(prev => !prev);
+    }
+
+    useEffect(() => {
+        localStorage.setItem("persist", persist);
+    }, [persist]);
+
     return (
         <Animated>
-
-            <div>
-                {success
-                    ? <div>
-                        Du er logget inn
-                    </div>
-                    : <></>
-                }
-            </div>
-
             <div className="max-w-2xl w-full mx-auto mt-32 bg-white px-8 py-12 rounded-md shadow-md">
                 <form 
                     className="max-w-sm w-full mx-auto"
@@ -95,6 +96,18 @@ export function Login() {
                     <button className="max-w-sm w-full py-3 text-lg font-medium rounded-md bg-blue-600 text-white">
                         Logg inn
                     </button>
+
+                    <div className="flex items-center space-x-4">
+                        <input 
+                            type="checkbox"
+                            onChange={togglePersist}
+                            checked={persist} 
+                        />
+
+                        <p>
+                            Husk meg?
+                        </p>
+                    </div>
                 </form>
             </div>
         </Animated>
