@@ -34,7 +34,7 @@ export default function AdminLayout() {
                     <div className="pt-20 pb-32 space-y-6">
                         {navigation.map((item, index) => {
                             return <NavLink
-                                        className={"items-center space-x-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-md " + (!item.secure || auth?.role === 5150 ? "flex" : "hidden")}
+                                        className={"items-center space-x-2 px-4 py-2 transition border duration-150 ease-in-out hover:border-sky-600 bg-gray-100 border-gray-200 rounded-md " + (!item.secure || auth?.role === 5150 ? "flex" : "hidden")}
                                         key={index}
                                         to={item.href}
                                     >
