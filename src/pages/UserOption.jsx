@@ -3,15 +3,22 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/UseAxiosPrivate";
 import { Animated } from "./Animated";
 import union from "../assets/union.png";
+import ChangeUserPassword from "../components/ChangeUserPassword";
+import Modal from "../components/Modal";
 
 
 export default function UserOption() {
 
     const { id } = useParams();
+    const navigator = useNavigate();
     const axiosPrivate = useAxiosPrivate();
     const [user, setUser] = useState();
     const [role, setRole] = useState(1984);
     const [isLoading, setLoading] = useState();
+    const [deleteLoading, setDeleteLoading] = useState();
+    const [deleteModal, setDeleteModal] = useState(false);
+
+    const [success, setSuccess] = useState();
 
     const ROLES = {
         1984: "Redaktør"
@@ -59,12 +66,56 @@ export default function UserOption() {
         }
     }
 
+    const deleteUser = async (e) => {
+        e.preventDefault();
+        setDeleteLoading(true);
+
+        try {
+            const res = await axiosPrivate.delete(
+                "admin/users/delete",
+                {
+                    data: JSON.stringify({
+                        user_id: id
+                    })
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
+
+            navigator("/dashboard/admin");
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
     return (
         <Animated>
             {
                 user 
                     ? 
                     <>
+
+                        <Modal show={deleteModal} setShow={setDeleteModal} >
+                            <form
+                                onSubmit={deleteUser} 
+                                className="flex justify-center items-center w-full"
+                            >
+                                <div className="text-center w-full">
+                                    <h1 className="pb-6 font-semibold text-xl">
+                                        Slette bruker?
+                                    </h1>
+                                    <button className="w-full flex justify-center items-center py-2 bg-red-300 text-red-800 font-semibold rounded-md">
+                                        Slett
+                                    </button>
+                                </div>
+                            </form>
+                        </Modal>
+
                         <div className="mt-12 pb-20">
                             <div>
                                 <h1 className="text-5xl font-semibold text-sky-800 pb-4">
@@ -76,7 +127,7 @@ export default function UserOption() {
                             </div>
                         </div>
 
-                        <div className="flex justify-around items-stretch">
+                        <div className="flex justify-between items-stretch mx-12 pb-20">
                             <div className="max-w-md w-full px-12 py-8 bg-white rounded-md shadow-md flex justify-center items-center">
                                 {
                                     user?.site
@@ -133,6 +184,28 @@ export default function UserOption() {
                                     </button>
                                 </form>
                             </div>
+                        </div>
+
+                        <div className="px-12 pb-16">
+                            <div className="w-full bg-white px-12 py-8 rounded-md shadow-md">
+                                <h1 className="text-xl font-semibold pb-6">
+                                    Endre passord
+                                </h1>
+
+                                <ChangeUserPassword user={user} setSuccess={setSuccess} />
+                            </div>
+                        </div>
+
+                        <div className="px-12 pb-16">
+                            <button 
+                                onClick={() => {
+                                    setDeleteModal(true)
+                                    document.body.style.overflow = "hidden";
+                                }}
+                                className="max-w-sm w-full flex justify-center items-center py-3 rounded-md bg-red-300 text-red-800 font-semibold"
+                            >
+                                Slett bruker
+                            </button>
                         </div>
                     </>
                     :     

@@ -27,7 +27,6 @@ export default function Users() {
                 isMounted && setUsers(res.data);
             } catch (error) {
                 console.log(error);
-                navigate("/login", { state: { from: location }, replace: true });
             }
         }
 
