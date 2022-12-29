@@ -41,7 +41,9 @@ export function Login() {
             );
             const accessToken = res?.data?.accessToken;
             const role = res?.data?.role;
-            setAuth({user, password, accessToken, role});
+            const id = res?.data?.id;
+            const username = res?.data?.username;
+            setAuth({username, accessToken, role, id});
             setUser("");
             setPassword("");
             navigate(from, { replace: true });

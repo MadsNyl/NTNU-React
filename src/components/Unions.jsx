@@ -19,7 +19,6 @@ export default function UnionList() {
                 const res = await axiosPrivate.get("site/all", {
                     singal: controller.singal
                 });
-                console.log(res.data);
                 isMounted && setUnions(res.data);
             } catch (error) {
                 console.log(error);

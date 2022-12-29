@@ -28,7 +28,7 @@ export default function UserOption() {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getAllUsers = async () => {
+        const getUser = async () => {
             try {
                 const res = await axiosPrivate.get(`admin/users/${id}`, {
                     singal: controller.singal
@@ -40,7 +40,7 @@ export default function UserOption() {
             }
         }
 
-        getAllUsers();
+        getUser();
 
         return () => {
             isMounted = false;

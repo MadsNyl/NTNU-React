@@ -12,6 +12,7 @@ import AdminLayout from "./AdminLayout";
 import Unions from "./Unions";
 import NewUser from "./NewUser";
 import UserOption from "./UserOption";
+import Site from "./Site";
 
 
 export function AnimatedRoutes() {
@@ -28,6 +29,10 @@ export function AnimatedRoutes() {
                     <Route element={<PersistLogin />}>
                             <Route element={<RequireAuth allowedRoles={[5150, 1984]} />}>
                                 <Route path="/dashboard" element={<Dashboard />} />
+                            </Route>
+
+                            <Route element={<RequireAuth allowedRoles={[5150, 1984]} />}>
+                                <Route path="/dashboard/foreninger/:title" element={<Site />} />
                             </Route>
 
                             <Route element={<RequireAuth allowedRoles={[5150]} />}>

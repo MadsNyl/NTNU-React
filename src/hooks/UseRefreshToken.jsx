@@ -10,12 +10,11 @@ export default function useRefreshToken() {
             withCredentials: true
         });
 
-        setAuth(prev => {
-            return { 
-                ...prev, 
-                role: res.data.role,
-                accessToken: res.data.accessToken 
-            }
+        setAuth({
+            username: res.data.username, 
+            role: res.data.role,
+            accessToken: res.data.accessToken,
+            id: res.data.id 
         });
 
         return res.data.accessToken;
