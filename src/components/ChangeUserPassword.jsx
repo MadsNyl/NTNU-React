@@ -51,7 +51,7 @@ export default function ChangeUserPassword(props) {
             </div>
 
             <button
-                className="flex justify-center items-center w-full py-3 rounded-md bg-emerald-300 text-green-800 font-semibold"
+                className="flex justify-center items-center w-full py-3 rounded-md bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800  font-semibold"
             >
                 Oppdater
             </button>

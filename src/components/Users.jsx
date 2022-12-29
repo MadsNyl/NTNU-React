@@ -73,7 +73,7 @@ export default function Users() {
 
                                         <NavLink 
                                             to={`/dashboard/brukere/${item.id}`}
-                                            className="px-4 py-2 rounded-md bg-emerald-400 text-white font-semibold"
+                                            className="px-4 py-2 rounded-md bg-sky-800 text-white font-semibold transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800"
                                         >
                                             Se mer
                                         </NavLink>

@@ -52,7 +52,7 @@ export default function AdminLayout() {
 
                     <button
                         onClick={signOut}
-                        className="absolute bottom-8 flex items-center space-x-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-md"
+                        className="absolute bottom-8 flex items-center space-x-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-md transition duration-150 ease-in-out hover:border-red-600"
                     >
                         <img 
                             src={logoutImg} 

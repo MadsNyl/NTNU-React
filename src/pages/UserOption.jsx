@@ -89,6 +89,7 @@ export default function UserOption() {
             console.log(error);
         } finally {
             setLoading(false);
+            document.body.style.overflow = "visible";
         }
     }
 
@@ -109,7 +110,7 @@ export default function UserOption() {
                                     <h1 className="pb-6 font-semibold text-xl">
                                         Slette bruker?
                                     </h1>
-                                    <button className="w-full flex justify-center items-center py-2 bg-red-300 text-red-800 font-semibold rounded-md">
+                                    <button className="w-full flex justify-center items-center py-2 bg-red-300 text-red-800 font-semibold rounded-md transition duration-150 ease-in-out hover:bg-red-800 hover:text-white ">
                                         Slett
                                     </button>
                                 </div>
@@ -149,7 +150,7 @@ export default function UserOption() {
                                             </button>
                                         </div>
                                     : 
-                                        <button className="px-4 py-3 bg-emerald-300 text-emerald-800 rounded-md">
+                                        <button className="px-4 py-3 bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800 rounded-md">
                                             <h1 className="font-semibold">
                                                 Koble til side
                                             </h1>
@@ -178,7 +179,7 @@ export default function UserOption() {
                                     </select>
 
                                     <button 
-                                        className="px-12 py-2 rounded-md bg-emerald-300 text-green-800 font-semibold"
+                                        className="px-12 py-2 rounded-md bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800  font-semibold"
                                     >
                                         Endre
                                     </button>
@@ -202,7 +203,7 @@ export default function UserOption() {
                                     setDeleteModal(true)
                                     document.body.style.overflow = "hidden";
                                 }}
-                                className="max-w-sm w-full flex justify-center items-center py-3 rounded-md bg-red-300 text-red-800 font-semibold"
+                                className="max-w-sm w-full flex justify-center items-center py-3 rounded-md bg-red-300 text-red-800 font-semibold transition duration-150 ease-in-out hover:bg-red-800 hover:text-white "
                             >
                                 Slett bruker
                             </button>

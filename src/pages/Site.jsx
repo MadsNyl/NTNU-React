@@ -62,7 +62,6 @@ export default function Site() {
                                 alt="Foreningslogo" 
                             />
                             <div 
-                                onClick={""}
                                 className="cursor-pointer absolute left-1 bottom-1 w-7 h-7 flex justify-center items-center rounded-full bg-sky-900 border border-white text-white transition duration-150 ease-in-out hover:bg-white hover:text-sky-900"
                             >
                                 <p className="text-lg font-semibold pb-1">
@@ -152,7 +151,6 @@ export default function Site() {
                             </h1>
 
                             <button 
-                                onClick={""}
                                 className="px-8 py-2 flex justify-center items-center bg-sky-800 text-white rounded-md"
                             >
                                 Legg til

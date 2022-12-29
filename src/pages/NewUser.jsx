@@ -55,7 +55,11 @@ export default function NewUser() {
                     withCredentials: true
                 }
             );
-
+            
+            setUsername("");
+            setPassword("");
+            setRePassword("");
+            e.target.reset();
             setSuccess("Ny bruker opprettet.");
         } catch (error) {
             console.log(error);
@@ -161,7 +165,7 @@ export default function NewUser() {
                     
                     <button 
                         disabled={isLoading}
-                        className="w-full bg-emerald-400 font-semibold text-white text-lg py-3 rounded-md transition duration-150 ease-in-out hover:bg-emerald-200 hover:text-emerald-800 flex justify-center"
+                        className="w-full bg-sky-800 font-semibold text-white text-lg py-3 rounded-md transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800 flex justify-center"
                     >
                         {
                             isLoading

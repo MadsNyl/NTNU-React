@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 
 export default function Magazines(props) {
@@ -50,9 +51,15 @@ export default function Magazines(props) {
                     </div>
 
                     <div className="flex items-center space-x-4">
-                        <button className="w-20 py-2 rounded-md bg-sky-300 text-sky-800">
+                        <NavLink 
+                            to={"/dashboard/avis"}
+                            state={{
+                                id: item.id
+                            }}
+                            className="w-20 py-2 text-center rounded-md bg-sky-300 text-sky-800 transition duration-150 ease-in-out hover:bg-sky-800 hover:text-white"
+                        >
                             Rediger
-                        </button>
+                        </NavLink>
 
                         <button className="w-20 py-2 rounded-md bg-red-300 text-red-800">
                             Slett
