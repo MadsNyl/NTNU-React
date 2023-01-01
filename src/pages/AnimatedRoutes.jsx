@@ -14,6 +14,7 @@ import NewUser from "./NewUser";
 import UserOption from "./UserOption";
 import Site from "./Site";
 import Magazines from "./Magazine";
+import NewUnion from "./NewUnion";
 
 
 export function AnimatedRoutes() {
@@ -46,6 +47,10 @@ export function AnimatedRoutes() {
 
                             <Route element={<RequireAuth allowedRoles={[5150]} />}>
                                 <Route path="/dashboard/brukere/ny" element={<NewUser />} />
+                            </Route>
+
+                            <Route element={<RequireAuth allowedRoles={[5150]} />}>
+                                <Route path="/dashboard/foreninger/ny" element={<NewUnion />} />
                             </Route>
 
                             <Route element={<RequireAuth allowedRoles={[5150]} />}>

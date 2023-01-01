@@ -5,6 +5,10 @@ import useAxiosPrivate from "../hooks/UseAxiosPrivate";
 import { Animated } from "../pages/Animated";
 import union from "../assets/union.png";
 import Magazines from "../components/Magazines";
+import Modal from "../components/Modal";
+import UploadButton from "../components/UploadButton";
+import AddMagazine from "../components/AddMagazine";
+import SuccessMessage from "../components/SuccessMessage";
 
 
 export default function Site() {
@@ -16,6 +20,13 @@ export default function Site() {
     const [auth] = useAuth();
     const [site, setSite] = useState();
     const [magazines, setMagazines] = useState();
+
+    const [showMag, setShowMag] = useState(false);
+    const [addMagSuccess, setAddMagSuccess] = useState(false);
+
+    const [deleteMagSuccess, setDeleteMagSuccess] = useState();
+    const [magFile, setMagFile] = useState();
+    const [magImg, setMagImg] = useState();
 
     const [newTitle, setNewTitle] = useState("");
     const [name, setName] = useState("");
@@ -32,11 +43,11 @@ export default function Site() {
                         singal: controller.singal,
                     }
                 );
-                console.log(res.data)
                 isMounted && setSite(res.data.site[0]);
                 isMounted && setMagazines(res.data.magazines);
             } catch (error) {
                 console.log(error);
+                if (error.response.status === 404) navigator("/dashboard");
             }
         }
 
@@ -51,6 +62,21 @@ export default function Site() {
 
     return (
         <Animated>
+
+            <AddMagazine showMag={showMag} setShowMag={setShowMag} siteTitle={title} magazines={magazines} setMagazines={setMagazines} setSucces={setAddMagSuccess} />
+
+            {  
+                addMagSuccess
+                    ? <SuccessMessage message={"Avis er lagt til."} setShow={setAddMagSuccess} /> 
+                    : <></>
+            }
+
+            {
+                deleteMagSuccess
+                    ? <SuccessMessage message={"Avis er slettet."} setShow={setDeleteMagSuccess} />
+                    : <></>
+            }
+
             {site 
                 ? 
                 <div className="px-12 py-16">
@@ -151,13 +177,20 @@ export default function Site() {
                             </h1>
 
                             <button 
-                                className="px-8 py-2 flex justify-center items-center bg-sky-800 text-white rounded-md"
+                                onClick={() => {
+                                    setShowMag(true);
+                                    document.body.style.overflow = "hidden";
+                                }}
+                                className="px-8 py-2 flex justify-center items-center bg-sky-800 text-white rounded-md transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800"
                             >
                                 Legg til
                             </button>
                         </div>
-
-                        <Magazines magazines={magazines}/>
+                        
+                        { magazines.length 
+                            ? <Magazines magazines={magazines} setMagazines={setMagazines} setSuccess={setDeleteMagSuccess}/>
+                            : <h1 className="text-center text-lg font-semibold">Denne siden har ingen aviser publisert.</h1>
+                        }
                     </div>
                 </div>
                 : <div></div>

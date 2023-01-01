@@ -1,50 +1,42 @@
 import React, { useEffect, useState } from "react";
 import SuccessMessage from "../components/SuccessMessage";
+import useAuth from "../hooks/UseAuth";
 import useAxiosPrivate from "../hooks/UseAxiosPrivate";
 import { Animated } from "./Animated";
 
+export default function NewUnion() {
 
-export default function NewUser() {
+    const [auth] = useAuth();
 
     const [isLoading, setLoading] = useState();
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-    const [rePassword, setRePassword] = useState();
-    const [role, setRole] = useState(1984);
-    const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+    const [title, setTitle] = useState();
+    const [name, setName] = useState();
 
     const axiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
         setError("");
-    }, [username, password, rePassword]);
-
+    }, [title, name]);
 
     const submit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        if (!username || !password || !rePassword) {
+        if (!title || !name) {
             setError("Alle felter må fylles inn.");
-            setLoading(false);
-            return;
-        }
-
-        if (password !== rePassword) {
-            setError("Passord må være like.");
             setLoading(false);
             return;
         }
 
         try {
             const res = await axiosPrivate.post(
-                "register", 
+                "site/create", 
                 JSON.stringify({
-                    username: username, 
-                    password: password, 
-                    repeatedPassword: rePassword, 
-                    role: role
+                    title: title, 
+                    name: name,
+                    user_id: auth.id
                 }), 
                 {
                     headers: { "Content-Type": "application/json" },
@@ -52,9 +44,8 @@ export default function NewUser() {
                 }
             );
             
-            setUsername("");
-            setPassword("");
-            setRePassword("");
+            setTitle("");
+            setName("");
             setSuccess(true);
             e.target.reset();
         } catch (error) {
@@ -65,12 +56,11 @@ export default function NewUser() {
     }
 
 
-    return(
+    return ( 
         <Animated>
-
             {
                 success
-                    ? <SuccessMessage message={"Bruker opprettet"} setShow={setSuccess} />
+                    ? <SuccessMessage message={"Forening opprettet."} setShow={setSuccess} />
                     : <></>
             }
 
@@ -98,60 +88,25 @@ export default function NewUser() {
                     <div className="pb-10 flex items-center space-x-12">
                         <div className="w-full">
                             <h1 className="pb-4 text-lg font-semibold">
-                                Brukernavn
+                                Tittel
                             </h1>
                             <input 
                                 type="text"
                                 onChange={(e) => {
-                                    setUsername(e.target.value);
+                                    setTitle(e.target.value);
                                 }}
                                 className="max-w-md w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md focus:outline-sky-700" 
                             />
                         </div>
                         <div className="w-full">
                             <h1 className="pb-4 text-lg font-semibold">
-                                Rolle
-                            </h1>
-                            <select 
-                                value={role}
-                                className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md focus:outline-sky-700"
-                                onChange={(e) => {
-                                    setRole(e.target.value)
-                                }}
-                            >
-                                <option value={1984}>
-                                    Redaktør
-                                </option>
-                                <option value={5150}>
-                                    Admin
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="pb-10 flex items-center space-x-12">
-                        <div className="w-full">
-                            <h1 className="pb-4 text-lg font-semibold">
-                                Passord
+                                Navn
                             </h1>
                             <input 
+                                type="text"
                                 onChange={(e) => {
-                                    setPassword(e.target.value);
+                                    setName(e.target.value);
                                 }}
-                                type="password"
-                                className="max-w-md w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md focus:outline-sky-700" 
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <h1 className="pb-4 text-lg font-semibold">
-                                Repeter passord
-                            </h1>
-                            <input 
-                                onChange={(e) => {
-                                    setRePassword(e.target.value);
-                                }}
-                                type="password"
                                 className="max-w-md w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md focus:outline-sky-700" 
                             />
                         </div>

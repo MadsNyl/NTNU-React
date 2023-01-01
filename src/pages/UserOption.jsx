@@ -37,6 +37,7 @@ export default function UserOption() {
                 isMounted && setUser(res.data);
             } catch (error) {
                 console.log(error);
+                if (error.response.status === 404) navigator("/dashboard");
             }
         }
 
@@ -101,7 +102,7 @@ export default function UserOption() {
                     ? 
                     <>
 
-                        <Modal show={deleteModal} setShow={setDeleteModal} >
+                        <Modal show={deleteModal} setShow={setDeleteModal} error={[]} >
                             <form
                                 onSubmit={deleteUser} 
                                 className="flex justify-center items-center w-full"

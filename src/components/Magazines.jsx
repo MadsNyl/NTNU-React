@@ -1,13 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import useAxiosPrivate from "../hooks/UseAxiosPrivate";
 
 
 export default function Magazines(props) {
+
+    const [isLoading, setLoading] = useState();
+    const axiosPrivate = useAxiosPrivate();
 
     const convertDate = (date) => {
         if (!date) return "Ikke redigert";
         return new Date(date).toLocaleDateString("no-NO");
     }
+
+    const deleteMag = async (item, index) => {
+        setLoading(true);
+
+        try {
+            const res = await axiosPrivate.delete(
+                "magazine/delete",
+                {
+                    data: JSON.stringify({
+                        id: item.id,
+                        img: item.logo,
+                        pdf: item.pdf
+                    })
+                },
+                {
+                    headers: {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true
+                    }
+                }
+            );
+
+            props.setSuccess(true);
+            const newList = props.magazines;
+            newList.splice(index, 1);
+            props.setMagazines(newList);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    } 
 
     return(
         <div className="w-full space-y-1">
@@ -61,7 +97,10 @@ export default function Magazines(props) {
                             Rediger
                         </NavLink>
 
-                        <button className="w-20 py-2 rounded-md bg-red-300 text-red-800">
+                        <button 
+                            onClick={() => deleteMag(item, index)}
+                            className="w-20 py-2 rounded-md bg-red-300 text-red-800 transition duration-150 ease-in-out hover:bg-red-800 hover:text-white"
+                        >
                             Slett
                         </button>
                     </div>
