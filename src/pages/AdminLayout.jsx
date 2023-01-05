@@ -22,7 +22,8 @@ export default function AdminLayout() {
     }
 
     const navigation = [
-        { name: "oversikt", href: "/dashboard", logo: home, secure: false },
+        { name: "hjem", href: "/", logo: home, secure: false },
+        { name: "profil", href: "/dashboard/profil", logo: user, secure: false },
         { name: "admin", href: "/dashboard/admin", logo: admin, secure: true },
         { name: "foreninger", href: "/dashboard/foreninger", logo: union, secure: true }
     ];

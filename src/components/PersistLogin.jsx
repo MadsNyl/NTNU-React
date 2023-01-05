@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import useAuth from "../hooks/UseAuth";
 import useRefreshToken from "../hooks/UseRefreshToken";
+import Spinner from "./Spinner";
 
 export default function PersistLogin() {
     const [isLoading, setLoading] = useState(true);
@@ -32,7 +33,10 @@ export default function PersistLogin() {
                 !persist
                     ? <Outlet />
                     : isLoading
-                        ? <div>Loading...</div>
+                        ?     
+                        <div className="w-full h-screen flex justify-center items-center">
+                            <Spinner size={12} />
+                        </div>
                         : <Outlet />
             }
         </>

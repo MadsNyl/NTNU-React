@@ -27,9 +27,7 @@ export default function Admin() {
             </div>
 
             <div className="pb-12">
-                <div className="bg-white px-12 py-8 max-w-4xl mx-auto w-full rounded-md shadow-md">
-                    <Users />
-                </div>
+                <Users />
             </div>
         </Animated>
     );

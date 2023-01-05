@@ -27,9 +27,7 @@ export default function Unions() {
                 </div>
             </div>
 
-            <div className="bg-white px-12 py-8 max-w-4xl mx-auto w-full rounded-md shadow-md">
-                <UnionList />
-            </div>
+            <UnionList />
         </Animated>
     );
 }

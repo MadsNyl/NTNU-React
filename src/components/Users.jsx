@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/UseAxiosPrivate";
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
-import user from "../assets/user.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import Spinner from "../components/Spinner";
+import User from "./User";
 
 export default function Users() {
 
-    const [users, setUsers] = useState();
+    const [users, setUsers] = useState(null);
+    const [isLoading, setLoading] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const ROLES = {
-        1984: "Redaktør"
-    }
 
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
         const getAllUsers = async () => {
+            setLoading(true);
             try {
                 const res = await axiosPrivate.get("admin/users", {
                     singal: controller.singal
@@ -27,6 +27,8 @@ export default function Users() {
                 isMounted && setUsers(res.data);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -40,52 +42,34 @@ export default function Users() {
 
     return(
         <div>
-            { users?.length 
-                ? <div>
-                    <div className="pb-10">
-                        <h1 className="text-lg font-semibold">
-                            Antall brukere: {users.length}
-                        </h1>
+            {   
+                !isLoading
+                    ?
+                    (users 
+                        ? (<div className="bg-white px-12 py-8 max-w-4xl mx-auto w-full rounded-md shadow-md">
+                            <div className="pb-10">
+                                <h1 className="text-lg font-semibold">
+                                    Antall brukere: {users.length}
+                                </h1>
+                            </div>
+
+                            <ul className="space-y-6">
+                                {users?.map((item, index) => {
+                                    return <User key={index} item={item} index={index} users={users} />
+                                })}                
+                            </ul>
+                        </div>)
+                        : 
+                            (<div>
+                                <h1 className="text-center text-2xl font-semibold text-gray-900">
+                                    Det finnes ingen brukere enda.
+                                </h1>
+                            </div>)
+                    )
+                    : 
+                    <div className="w-full flex justify-center mt-20">
+                        <Spinner size={10} />
                     </div>
-
-                    <ul className="space-y-6">
-                        {users?.map((item, index) => {
-                            return <div
-                                        className={"flex justify-between items-center " + (index < users.length - 1 ? "border-b border-b-gray-300 pb-8" : "") } 
-                                        key={index}
-                                    >
-                                        <div className="flex items-center space-x-10">
-                                            <img 
-                                                className="w-10 h-10"
-                                                src={user}
-                                                alt="Forening logo" 
-                                            />
-                                            <div>
-                                                <p className="text-xs text-gray-400">Brukernavn:</p>
-                                                <h1 className="text-lg font-semibold">{item.username}</h1>
-                                            </div>
-
-                                            <div>
-                                                <p className="text-xs text-gray-400">Rolle:</p>
-                                                <h1 className="text-lg font-semibold">{item.role} {ROLES[item.role]}</h1>
-                                            </div>
-                                        </div>
-
-                                        <NavLink 
-                                            to={`/dashboard/brukere/${item.id}`}
-                                            className="px-4 py-2 rounded-md bg-sky-800 text-white font-semibold transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800"
-                                        >
-                                            Se mer
-                                        </NavLink>
-                                    </div>
-                        })}                
-                    </ul>
-                </div>
-                : <div>
-                    <h1 className="text-center text-2xl font-semibold text-gray-900">
-                        Det finnes ingen brukere enda.
-                    </h1>
-                </div>   
             }
         </div>
     );

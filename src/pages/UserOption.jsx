@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/UseAxiosPrivate";
 import { Animated } from "./Animated";
 import union from "../assets/union.png";
 import ChangeUserPassword from "../components/ChangeUserPassword";
 import Modal from "../components/Modal";
+import Spinner from "../components/Spinner";
 
 
 export default function UserOption() {
@@ -14,15 +15,48 @@ export default function UserOption() {
     const axiosPrivate = useAxiosPrivate();
     const [user, setUser] = useState();
     const [role, setRole] = useState(1984);
+    const [site, setSite] = useState(null);
     const [isLoading, setLoading] = useState();
     const [deleteLoading, setDeleteLoading] = useState();
     const [deleteModal, setDeleteModal] = useState(false);
+    const [linkModal, setLinkModal] = useState(false);
+    const [unions, setUnions] = useState();
 
     const [success, setSuccess] = useState();
 
     const ROLES = {
         1984: "Redaktør"
     }
+
+    useEffect(() => {
+
+        if (linkModal) {
+            let isMounted = true;
+            const controller = new AbortController();
+
+            const getUnions = async () => {
+                try {
+                    const res = await axiosPrivate.get("site/all", {
+                        singal: controller.singal
+                    });
+                    isMounted && setUnions(res.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            getUnions();
+
+            return () => {
+                isMounted = false;
+                controller.abort();
+            }
+
+        }
+
+        return;
+
+    }, [linkModal]);
 
     useEffect(() => {
         let isMounted = true;
@@ -33,8 +67,8 @@ export default function UserOption() {
                 const res = await axiosPrivate.get(`admin/users/${id}`, {
                     singal: controller.singal
                 });
-                console.log(res.data)
                 isMounted && setUser(res.data);
+                isMounted && setSite(res.data.site[0])
             } catch (error) {
                 console.log(error);
                 if (error.response.status === 404) navigator("/dashboard");
@@ -94,6 +128,60 @@ export default function UserOption() {
         }
     }
 
+    const linkUp = async (title, logo) => {
+        setLoading(true);
+
+        try {
+            await axiosPrivate.post(
+                "site/connect",
+                JSON.stringify({
+                    site_title: title,
+                    editor_id: id
+                }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
+            
+            setSite({
+                title: title,
+                logo: logo
+            })
+            setLinkModal(false);
+            document.body.style.overflow = "visible";
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const removeSite = async () => {
+        setLoading(true);
+
+        try {
+            await axiosPrivate.delete(
+                "site/remove",
+                {
+                    data: JSON.stringify({
+                        editor_id: id
+                    })
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
+
+            setSite(null);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
 
     return (
         <Animated>
@@ -118,6 +206,46 @@ export default function UserOption() {
                             </form>
                         </Modal>
 
+                        <Modal show={linkModal} setShow={setLinkModal} error={[]} >
+                            <div className="px-4 w-96">
+                                <div className="flex justify-between items-center pb-4">
+                                    <h1 className="text-lg font-medium">
+                                        Koble til forening
+                                    </h1>
+
+                                    <h1 className="font-semibold">
+                                        {unions ? unions.length : 0}
+                                    </h1>
+                                </div>
+
+                                <div className="w-full space-y-2">
+                                    {unions
+                                        ? unions.map((item, index) => {
+                                            return <div key={index} className="rounded-md bg-gray-100 px-4 py-3 flex justify-between items-center w-full">
+                                                        <h1 className="font-medium">
+                                                            {item.title}
+                                                        </h1>
+
+                                                        <button 
+                                                            onClick={() => {
+                                                                linkUp(item.title, item.logo);
+                                                            }}
+                                                            disabled={isLoading}
+                                                            className="flex justify-center items-center px-3 py-2 bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800 rounded-md"
+                                                        >
+                                                            {!isLoading
+                                                                ? "Koble til"
+                                                                : <Spinner size={6} />
+                                                            }
+                                                        </button>
+                                                    </div>
+                                        })
+                                        : <Spinner size={8} />
+                                    }
+                                </div>
+                            </div>
+                        </Modal>
+
                         <div className="mt-12 pb-20">
                             <div>
                                 <h1 className="text-5xl font-semibold text-sky-800 pb-4">
@@ -132,26 +260,38 @@ export default function UserOption() {
                         <div className="flex justify-between items-stretch mx-12 pb-20">
                             <div className="max-w-md w-full px-12 py-8 bg-white rounded-md shadow-md flex justify-center items-center">
                                 {
-                                    user?.site
+                                    site
                                     ? 
                                         <div className="flex items-center justify-between w-full">
                                             <div className="flex items-center space-x-4">
                                                 <img 
                                                     className="w-12 h-12"
-                                                    src={user.site[0].logo ? user.site[0].logo : union} 
+                                                    src={site.logo ? site.logo : union} 
                                                     alt="Side logo" 
                                                 />
                                                 <h1 className="font-semibold text-lg">
-                                                    { user.site[0].title }
+                                                    { site.title }
                                                 </h1>
                                             </div>
 
-                                            <button className="bg-red-300 text-red-800 px-4 py-2 rounded-md">
-                                                Fjern
+                                            <button
+                                                onClick={removeSite} 
+                                                className="flex justify-center items-center bg-red-300 text-red-800 px-4 py-2 rounded-md transition duration-150 ease-in-out hover:bg-red-800 hover:text-white"
+                                            >
+                                                {isLoading
+                                                    ? <Spinner size={6} />
+                                                    : "Fjern"
+                                                }
                                             </button>
                                         </div>
                                     : 
-                                        <button className="px-4 py-3 bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800 rounded-md">
+                                        <button
+                                            onClick={() => {
+                                                setLinkModal(true);
+                                                document.body.style.overflow = "hidden";
+                                            }} 
+                                            className="px-4 py-3 bg-sky-800 text-white transition duration-150 ease-in-out hover:bg-sky-300 hover:text-sky-800 rounded-md"
+                                        >
                                             <h1 className="font-semibold">
                                                 Koble til side
                                             </h1>

@@ -25,8 +25,6 @@ export default function Site() {
     const [addMagSuccess, setAddMagSuccess] = useState(false);
 
     const [deleteMagSuccess, setDeleteMagSuccess] = useState();
-    const [magFile, setMagFile] = useState();
-    const [magImg, setMagImg] = useState();
 
     const [newTitle, setNewTitle] = useState("");
     const [name, setName] = useState("");
